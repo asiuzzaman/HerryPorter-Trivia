@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var audioPlayer: AVAudioPlayer!
     @State private var scalePlayButton = true
     @State private var moveBackGroundImage = true
+    @State private var animateViewsIn = false
 
     var body: some View {
         GeometryReader { geo in
@@ -29,16 +30,23 @@ struct ContentView: View {
 
                 VStack {
                     VStack {
-                        Image(systemName: "bolt.fill")
-                            .font(.largeTitle)
-                            .imageScale(.large)
-                        Text("HP")
-                            .font(.custom(Constants.hpFont, size: 70))
-                            .padding(.bottom, -50)
-                        Text("Trivia")
-                            .font(.custom(Constants.hpFont, size: 60))
+                        if animateViewsIn {
+                            VStack {
+                                Image(systemName: "bolt.fill")
+                                    .font(.largeTitle)
+                                    .imageScale(.large)
+                                Text("HP")
+                                    .font(.custom(Constants.hpFont, size: 70))
+                                    .padding(.bottom, -50)
+                                Text("Trivia")
+                                    .font(.custom(Constants.hpFont, size: 60))
+                            }
+                            .padding(.top, 70)
+                            .transition(.move(edge: .top))
+                        }
                     }
-                    .padding(.top, 70)
+                    .animation(.easeInOut(duration: 0.7).delay(2), value: animateViewsIn )
+
                     Spacer()
 
                     VStack {
@@ -58,34 +66,47 @@ struct ContentView: View {
 
                     HStack {
                         Spacer()
-                        Button {
-                            //Show instruction screen
-                        } label: {
-                            Image(systemName: "info.circle.fill")
-                                .font(.largeTitle)
-                                .foregroundColor(.white)
-                                .shadow(radius: 5)
-                        }
-                        Spacer()
-                        Button {
-                            // Starting a new game
-                        } label: {
-                            Text("Play")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .padding(.vertical, 7)
-                            .padding(.horizontal, 50)
-                            .background(Color.brown)
-                            .cornerRadius(20)
-                        }
-                        .scaleEffect(scalePlayButton ? 1.3: 1)
-                        .onAppear {
-                            withAnimation(.easeInOut(duration: 1.5).repeatForever()) {
-                                scalePlayButton.toggle()
+
+                        VStack {
+                            if animateViewsIn {
+                                Button {
+                                    //Show instruction screen
+                                } label: {
+                                    Image(systemName: "info.circle.fill")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.white)
+                                        .shadow(radius: 5)
+                                }
+                                .transition (.offset(x: -geo.size.width/4))
                             }
-                        }
+                        }.animation(.easeInOut(duration: 0.7).delay(2.7), value: animateViewsIn )
 
                         Spacer()
+                        VStack {
+                            if animateViewsIn {
+                                Button {
+                                    // Starting a new game
+                                } label: {
+                                    Text("Play")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.white)
+                                        .padding(.vertical, 7)
+                                        .padding(.horizontal, 50)
+                                        .background(Color.brown)
+                                        .cornerRadius(20)
+                                }
+                                .scaleEffect(scalePlayButton ? 1.3: 1)
+                                .onAppear {
+                                    withAnimation(.easeInOut(duration: 1.5).repeatForever()) {
+                                        scalePlayButton.toggle()
+                                    }
+                                }
+                                .transition(.offset(y: geo.size.height/3))
+                            }
+                        }.animation(.easeInOut(duration: 0.7).delay(2), value: animateViewsIn )
+
+                        Spacer()
+
                         Button {
                             //Settings button
                         } label: {
@@ -106,7 +127,8 @@ struct ContentView: View {
 
         }.ignoresSafeArea()
             .onAppear {
-                playAudio()
+                //playAudio()
+                animateViewsIn = true
             }
     }
 
