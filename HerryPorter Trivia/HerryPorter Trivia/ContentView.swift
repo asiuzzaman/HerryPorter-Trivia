@@ -27,6 +27,23 @@ struct ContentView: View {
                         Text("Trivia")
                             .font(.custom(Constants.hpFont, size: 60))
                     }
+                    .padding(.top, 70)
+                    Spacer()
+
+                    VStack {
+                        Text("Recent Scores")
+                            .font(.title2)
+                        Text("33")
+                        Text("33")
+                        Text("50")
+                    }
+                    .font(.title3)
+                    .padding(.horizontal)
+                    .foregroundColor(.white)
+                    .background(Color.black.opacity(0.7))
+                    .cornerRadius(15)
+
+                    Spacer()
 
                     HStack {
                         Spacer()
@@ -39,15 +56,18 @@ struct ContentView: View {
                                 .shadow(radius: 5)
                         }
                         Spacer()
-                        Button("Play") {
+                        Button {
                             // Starting a new game
+                        } label: {
+                            Text("Play")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                            .padding(.vertical, 7)
+                            .padding(.horizontal, 50)
+                            .background(Color.brown)
+                            .cornerRadius(20)
                         }
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
-                        .padding(.vertical, 7)
-                        .padding(.horizontal, 50)
-                        .background(Color.brown)
-                        .cornerRadius(20)
+
                         Spacer()
                         Button {
                             //Settings button
@@ -59,6 +79,8 @@ struct ContentView: View {
                         }
                         Spacer()
                     }.frame(width: geo.size.width)
+
+                    Spacer()
 
                 }
 
