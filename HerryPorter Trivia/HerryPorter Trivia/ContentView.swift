@@ -4,10 +4,15 @@
 //
 //  Created by Md. Asiuzzaman on 19/1/25.
 //
-
+import AVKit
 import SwiftUI
 
 struct ContentView: View {
+
+    @State private var audioPlayer: AVAudioPlayer!
+    @State private var scalePlayButton = true
+    @State private var moveBackGroundImage = true
+
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -15,6 +20,12 @@ struct ContentView: View {
                     .resizable()
                     .frame(width: geo.size.width * 3, height: geo.size.height)
                     .padding(.top, 3)
+                    .offset(x: moveBackGroundImage ? geo.size.width/1.1: -geo.size.width/1.1)
+                    .onAppear {
+                        withAnimation(.linear(duration: 60).repeatForever()) {
+                            self.moveBackGroundImage.toggle()
+                        }
+                    }
 
                 VStack {
                     VStack {
@@ -67,6 +78,12 @@ struct ContentView: View {
                             .background(Color.brown)
                             .cornerRadius(20)
                         }
+                        .scaleEffect(scalePlayButton ? 1.3: 1)
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 1.5).repeatForever()) {
+                                scalePlayButton.toggle()
+                            }
+                        }
 
                         Spacer()
                         Button {
@@ -88,6 +105,17 @@ struct ContentView: View {
             )
 
         }.ignoresSafeArea()
+            .onAppear {
+                playAudio()
+            }
+    }
+
+    func playAudio() {
+        let sound = Bundle.main.path(forResource: "magic-in-the-air", ofType: "mp3")
+
+        audioPlayer = try! AVAudioPlayer(contentsOf: URL(filePath: sound!))
+        audioPlayer.numberOfLoops = -1
+        audioPlayer.play()
     }
 }
 
