@@ -50,17 +50,22 @@ struct ContentView: View {
                     Spacer()
 
                     VStack {
-                        Text("Recent Scores")
-                            .font(.title2)
-                        Text("33")
-                        Text("33")
-                        Text("50")
-                    }
-                    .font(.title3)
-                    .padding(.horizontal)
-                    .foregroundColor(.white)
-                    .background(Color.black.opacity(0.7))
-                    .cornerRadius(15)
+                        if animateViewsIn {
+                            VStack {
+                                Text("Recent Scores")
+                                    .font(.title2)
+                                Text("10")
+                                Text("33")
+                                Text("50")
+                            }
+                            .font(.title3)
+                            .padding(.horizontal)
+                            .foregroundColor(.white)
+                            .background(Color.black.opacity(0.7))
+                            .cornerRadius(15)
+                            .transition(.opacity)
+                        }
+                    }.animation(.linear(duration: 1).delay(4), value: animateViewsIn )
 
                     Spacer()
 
@@ -107,14 +112,21 @@ struct ContentView: View {
 
                         Spacer()
 
-                        Button {
-                            //Settings button
-                        } label: {
-                            Image(systemName: "gearshape.fill")
-                                .font(.largeTitle)
-                                .foregroundColor(.white)
-                                .shadow(radius: 5)
-                        }
+                        VStack {
+                            if animateViewsIn {
+                                Button {
+                                    //Settings button
+                                } label: {
+                                    Image(systemName: "gearshape.fill")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.white)
+                                        .shadow(radius: 5)
+                                }
+                                .transition (.offset(x: geo.size.width/4))
+                            }
+                        }.animation(.easeInOut(duration: 0.7).delay(2.7), value: animateViewsIn )
+
+
                         Spacer()
                     }.frame(width: geo.size.width)
 
