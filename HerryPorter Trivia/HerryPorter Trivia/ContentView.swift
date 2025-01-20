@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var scalePlayButton = true
     @State private var moveBackGroundImage = true
     @State private var animateViewsIn = false
+    @State private var showInstructions = true
 
     var body: some View {
         GeometryReader { geo in
@@ -76,6 +77,7 @@ struct ContentView: View {
                             if animateViewsIn {
                                 Button {
                                     //Show instruction screen
+                                    showInstructions.toggle()
                                 } label: {
                                     Image(systemName: "info.circle.fill")
                                         .font(.largeTitle)
@@ -83,6 +85,9 @@ struct ContentView: View {
                                         .shadow(radius: 5)
                                 }
                                 .transition (.offset(x: -geo.size.width/4))
+                                .sheet(isPresented: $showInstructions) {
+                                    Instructions()
+                                }
                             }
                         }.animation(.easeInOut(duration: 0.7).delay(2.7), value: animateViewsIn )
 
