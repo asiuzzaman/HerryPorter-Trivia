@@ -10,10 +10,11 @@ import SwiftUI
 struct ContentView: View {
 
     @State private var audioPlayer: AVAudioPlayer!
-    @State private var scalePlayButton = true
-    @State private var moveBackGroundImage = true
+    @State private var scalePlayButton = false
+    @State private var moveBackGroundImage = false
     @State private var animateViewsIn = false
-    @State private var showInstructions = true
+    @State private var showInstructions = false
+    @State private var showSettins = false
 
     var body: some View {
         GeometryReader { geo in
@@ -121,6 +122,7 @@ struct ContentView: View {
                             if animateViewsIn {
                                 Button {
                                     //Settings button
+                                    showSettins.toggle()
                                 } label: {
                                     Image(systemName: "gearshape.fill")
                                         .font(.largeTitle)
@@ -128,6 +130,9 @@ struct ContentView: View {
                                         .shadow(radius: 5)
                                 }
                                 .transition (.offset(x: geo.size.width/4))
+                                .sheet(isPresented: $showSettins) {
+                                    Settings()
+                                }
                             }
                         }.animation(.easeInOut(duration: 0.7).delay(2.7), value: animateViewsIn )
 
