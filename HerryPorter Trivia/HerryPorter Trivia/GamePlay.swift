@@ -10,6 +10,9 @@ import SwiftUI
 struct GamePlay: View {
     @State private var animationViewsIn = false
     @State private var tappedCorrectAnswer = false
+    @State private var hintWiggle = false
+    @State private var scaleNextButton = false
+    @State private var movePointsToScore = false
 
     var body: some View {
         GeometryReader { geo in
@@ -56,10 +59,15 @@ struct GamePlay: View {
                                     .scaledToFit()
                                     .frame(width: 100)
                                     .foregroundStyle(.cyan)
-                                    .rotationEffect(.degrees(-15))
+                                    .rotationEffect(.degrees(hintWiggle ? -13: -17))
                                     .padding()
                                     .padding(.leading, 20)
                                     .transition (.offset(x: -geo.size.width/2))
+                                    .onAppear {
+                                        withAnimation(.easeInOut(duration: 0.1).repeatCount(9).delay(2).repeatForever()) {
+                                            hintWiggle = true
+                                        }
+                                    }
                             }
                         }
                         .animation(.easeInOut(duration: 1.5).delay(2), value: animationViewsIn)
@@ -75,10 +83,16 @@ struct GamePlay: View {
                                     .frame(width: 100, height: 100)
                                     .background(.cyan)
                                     .cornerRadius(20)
-                                    .rotationEffect(.degrees(15))
+                                    .rotationEffect(.degrees( hintWiggle ? 13: 17 ))
                                     .padding()
                                     .padding(.trailing, 20)
                                     .transition (.offset(x: geo.size.width/2))
+                                    .onAppear {
+                                        withAnimation(.easeInOut(duration: 0.1).repeatCount(9).delay(2).repeatForever()) {
+                                            hintWiggle = true
+                                        }
+                                    }
+
                             }
                         }
                         .animation(.easeInOut(duration: 1.5).delay(2), value: animationViewsIn)
@@ -117,6 +131,14 @@ struct GamePlay: View {
                                 .font(.largeTitle)
                                 .padding(50)
                                 .transition(.offset(y: -geo.size.height/4))
+                                .offset(x: movePointsToScore ? geo.size.width/2.3 : 0, y: movePointsToScore ? -geo.size.height/13 : 0 )
+                                .opacity(movePointsToScore ? 0: 1)
+                                .onAppear {
+                                    withAnimation(.easeInOut(duration: 1.5).delay(3)) {
+                                        movePointsToScore = true
+                                    }
+                                }
+
                         }
                     }
                     .animation(.easeInOut(duration: 1).delay(2), value: tappedCorrectAnswer)
@@ -131,14 +153,15 @@ struct GamePlay: View {
                     }.animation(.easeInOut(duration: 1).delay(1), value: tappedCorrectAnswer)
 
                     Spacer()
-
-                    Text("Answer 1")
-                        .minimumScaleFactor(0.5)
-                        .multilineTextAlignment(.center)
-                        .frame(width: geo.size.width/2.15, height: 80)
-                        .background(.green.opacity(0.5))
-                        .clipShape(RoundedRectangle(cornerRadius: 25))
-                        .scaleEffect(2)
+                    if tappedCorrectAnswer {
+                        Text("Answer 1")
+                            .minimumScaleFactor(0.5)
+                            .multilineTextAlignment(.center)
+                            .frame(width: geo.size.width/2.15, height: 80)
+                            .background(.green.opacity(0.5))
+                            .clipShape(RoundedRectangle(cornerRadius: 25))
+                            .scaleEffect(2)
+                    }
 
                     Group {
                         Spacer()
@@ -154,6 +177,12 @@ struct GamePlay: View {
                             .tint(.blue.opacity(0.5))
                             .font(.largeTitle)
                             .transition(.offset(y: geo.size.height/3))
+                            .scaleEffect(scaleNextButton ? 1.3: 1)
+                            .onAppear {
+                                withAnimation(.easeInOut(duration: 1.5).repeatForever()) {
+                                    scaleNextButton.toggle()
+                                }
+                            }
                         }
                     }
                     .animation(.easeInOut(duration: 2).delay(2), value: tappedCorrectAnswer)
@@ -170,7 +199,7 @@ struct GamePlay: View {
         }
         .ignoresSafeArea()
         .onAppear() {
-           // animationViewsIn = true
+            //animationViewsIn = true
             tappedCorrectAnswer = true
         }
     }
