@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct GamePlay: View {
+    @State private var animationViewsIn = false
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -18,6 +20,7 @@ struct GamePlay: View {
                     .overlay(Rectangle().foregroundStyle(.black.opacity(0.8)))
 
                 VStack {
+                    // MARK: End Game
                     HStack {
                         Button("End Game") {
                             // TODO: End the game
@@ -30,47 +33,73 @@ struct GamePlay: View {
                     .padding()
                     .padding(.vertical, 30)
 
-                    Text("Who is harry porter?")
-                        .font(.custom(Constants.hpFont, size: 50))
-                        .multilineTextAlignment(.center)
-                        .padding()
+                    // MARK: Questions
+                    VStack {
+                        if animationViewsIn {
+                            Text("Who is harry porter?")
+                                .font(.custom(Constants.hpFont, size: 50))
+                                .multilineTextAlignment(.center)
+                                .padding()
+                        }
+                    }
+                    .animation(.easeInOut(duration: 2), value: animationViewsIn)
+
                     Spacer()
 
+                    // MARK: Hints
                     HStack {
-                        Image(systemName: "questionmark.app.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100)
-                            .foregroundStyle(.cyan)
-                            .rotationEffect(.degrees(-15))
-                            .padding()
-                            .padding(.leading, 20)
+                        VStack {
+                            if animationViewsIn {
+                                Image(systemName: "questionmark.app.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100)
+                                    .foregroundStyle(.cyan)
+                                    .rotationEffect(.degrees(-15))
+                                    .padding()
+                                    .padding(.leading, 20)
+                                    .transition (.offset(x: -geometry.size.width/2))
+                            }
+                        }
+                        .animation(.easeInOut(duration: 1.5).delay(2), value: animationViewsIn)
 
                         Spacer()
-                        Image(systemName: "book.closed")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 50)
-                            .foregroundStyle(.black)
-                            .frame(width: 100, height: 100)
-                            .background(.cyan)
-                            .cornerRadius(20)
-                            .rotationEffect(.degrees(15))
-                            .padding()
-                            .padding(.trailing, 20)
+                        VStack {
+                            if animationViewsIn {
+                                Image(systemName: "book.closed")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 50)
+                                    .foregroundStyle(.black)
+                                    .frame(width: 100, height: 100)
+                                    .background(.cyan)
+                                    .cornerRadius(20)
+                                    .rotationEffect(.degrees(15))
+                                    .padding()
+                                    .padding(.trailing, 20)
+                                    .transition (.offset(x: geometry.size.width/2))
+                            }
+                        }
+                        .animation(.easeInOut(duration: 1.5).delay(2), value: animationViewsIn)
                     }
                     .padding()
 
+                    // MARK: Answers
                     LazyVGrid(columns: [GridItem(), GridItem()]) {
                         ForEach(1..<5) { i in
-                            Text("Answer: \(i)")
-                                .multilineTextAlignment(.center)
-                                .minimumScaleFactor(0.5)
-                                .padding(10)
-                                .frame(width: geometry.size.width/2.15, height: 80)
-                                .background(.green.opacity(0.5))
-                                .cornerRadius(30)
-
+                            VStack {
+                                if animationViewsIn {
+                                    Text("Answer: \(i)")
+                                        .multilineTextAlignment(.center)
+                                        .minimumScaleFactor(0.5)
+                                        .padding(10)
+                                        .frame(width: geometry.size.width/2.15, height: 80)
+                                        .background(.green.opacity(0.5))
+                                        .cornerRadius(25)
+                                        .transition(.scale)
+                                }
+                            }
+                            .animation(.easeOut(duration: 1).delay(1.5), value: animationViewsIn)
                         }
                     }
                     Spacer()
@@ -82,9 +111,14 @@ struct GamePlay: View {
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .ignoresSafeArea()
+        .onAppear() {
+            animationViewsIn = true
+        }
     }
 }
 
 #Preview {
-    GamePlay()
+    VStack {
+        GamePlay()
+    }
 }
