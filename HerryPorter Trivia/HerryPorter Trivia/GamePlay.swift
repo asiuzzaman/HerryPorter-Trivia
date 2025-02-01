@@ -9,14 +9,15 @@ import SwiftUI
 
 struct GamePlay: View {
     @State private var animationViewsIn = false
+    @State private var tappedCorrectAnswer = false
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { geo in
             ZStack {
                 //Text("Hello work")
                 Image("hogwarts")
                     .resizable()
-                    .frame(width: geometry.size.width * 3, height: geometry.size.height * 1.05)
+                    .frame(width: geo.size.width * 3, height: geo.size.height * 1.05)
                     .overlay(Rectangle().foregroundStyle(.black.opacity(0.8)))
 
                 VStack {
@@ -58,7 +59,7 @@ struct GamePlay: View {
                                     .rotationEffect(.degrees(-15))
                                     .padding()
                                     .padding(.leading, 20)
-                                    .transition (.offset(x: -geometry.size.width/2))
+                                    .transition (.offset(x: -geo.size.width/2))
                             }
                         }
                         .animation(.easeInOut(duration: 1.5).delay(2), value: animationViewsIn)
@@ -77,7 +78,7 @@ struct GamePlay: View {
                                     .rotationEffect(.degrees(15))
                                     .padding()
                                     .padding(.trailing, 20)
-                                    .transition (.offset(x: geometry.size.width/2))
+                                    .transition (.offset(x: geo.size.width/2))
                             }
                         }
                         .animation(.easeInOut(duration: 1.5).delay(2), value: animationViewsIn)
@@ -93,7 +94,7 @@ struct GamePlay: View {
                                         .multilineTextAlignment(.center)
                                         .minimumScaleFactor(0.5)
                                         .padding(10)
-                                        .frame(width: geometry.size.width/2.15, height: 80)
+                                        .frame(width: geo.size.width/2.15, height: 80)
                                         .background(.green.opacity(0.5))
                                         .cornerRadius(25)
                                         .transition(.scale)
@@ -104,15 +105,73 @@ struct GamePlay: View {
                     }
                     Spacer()
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height)
+                .frame(width: geo.size.width, height: geo.size.height)
                 .foregroundStyle(.white)
 
+                VStack {
+                    Spacer()
+
+                    VStack {
+                        if tappedCorrectAnswer {
+                            Text("5")
+                                .font(.largeTitle)
+                                .padding(50)
+                                .transition(.offset(y: -geo.size.height/4))
+                        }
+                    }
+                    .animation(.easeInOut(duration: 1).delay(2), value: tappedCorrectAnswer)
+
+                    Spacer()
+                    VStack {
+                        if tappedCorrectAnswer {
+                            Text("Brilliant!")
+                                .font(.custom(Constants.hpFont, size: 60))
+                                .transition(.scale.combined(with: .offset(y: -geo.size.height/2)))
+                        }
+                    }.animation(.easeInOut(duration: 1).delay(1), value: tappedCorrectAnswer)
+
+                    Spacer()
+
+                    Text("Answer 1")
+                        .minimumScaleFactor(0.5)
+                        .multilineTextAlignment(.center)
+                        .frame(width: geo.size.width/2.15, height: 80)
+                        .background(.green.opacity(0.5))
+                        .clipShape(RoundedRectangle(cornerRadius: 25))
+                        .scaleEffect(2)
+
+                    Group {
+                        Spacer()
+                        Spacer()
+                    }
+
+                    VStack {
+                        if tappedCorrectAnswer {
+                            Button("Next Question") {
+                                // TODO: Reset level for next question
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.blue.opacity(0.5))
+                            .font(.largeTitle)
+                            .transition(.offset(y: geo.size.height/3))
+                        }
+                    }
+                    .animation(.easeInOut(duration: 2).delay(2), value: tappedCorrectAnswer)
+
+                    Group {
+                        Spacer()
+                        Spacer()
+                    }
+
+                }
+                .foregroundStyle(.white)
             }
-            .frame(width: geometry.size.width, height: geometry.size.height)
+            .frame(width: geo.size.width, height: geo.size.height)
         }
         .ignoresSafeArea()
         .onAppear() {
-            animationViewsIn = true
+           // animationViewsIn = true
+            tappedCorrectAnswer = true
         }
     }
 }
