@@ -4,7 +4,7 @@
 //
 //  Created by Md. Asiuzzaman on 1/2/25.
 //
-
+import AVKit
 import SwiftUI
 
 struct GamePlay: View {
@@ -17,6 +17,10 @@ struct GamePlay: View {
     @State private var movePointsToScore = false
     @State private var revealHint = false
     @State private var revealBook = false
+    @State private var musicPlayer: AVAudioPlayer!
+    @State private var sfxPlayer: AVAudioPlayer!
+
+
    // @State private var tappedWrongAnswer = false
     @State private var wrongAnswerTapped: [Int] = []
 
@@ -81,6 +85,7 @@ struct GamePlay: View {
                                     .onTapGesture {
                                         withAnimation(.easeOut(duration: 1)) {
                                             revealHint = true
+                                            playFlipSound()
                                         }
 
                                     }
@@ -125,6 +130,7 @@ struct GamePlay: View {
                                     .onTapGesture {
                                         withAnimation(.easeOut(duration: 1)) {
                                             revealBook = true
+                                            playFlipSound()
                                         }
 
                                     }
@@ -168,8 +174,7 @@ struct GamePlay: View {
                                                 .onTapGesture {
                                                     withAnimation(.easeOut(duration: 1)) {
                                                         tappedCorrectAnswer = true
-
-
+                                                        playCorrectSound()
                                                 }
                                              }
                                         }
@@ -189,8 +194,9 @@ struct GamePlay: View {
                                             .transition(.scale)
                                             .onTapGesture {
                                                 withAnimation(.easeOut(duration: 1)) {
-
+                                                    playWrongSound()
                                                     wrongAnswerTapped.append(i);
+                                                    giveWrongFeedback()
                                                 }
                                             }
                                             .scaleEffect(wrongAnswerTapped.contains(i) ? 0.8: 1)
@@ -298,7 +304,44 @@ struct GamePlay: View {
         .onAppear() {
             animationViewsIn = true
             //tappedCorrectAnswer = true
+            //playMusic()
         }
+    }
+
+    private func playFlipSound() {
+        let sound = Bundle.main.path(forResource: "page-flip", ofType: "mp3")
+        sfxPlayer = try! AVAudioPlayer(contentsOf: URL(filePath: sound!))
+        sfxPlayer.volume = 0.15
+        sfxPlayer.play()
+    }
+
+    private func playWrongSound() {
+        let sound = Bundle.main.path(forResource: "negative-beeps", ofType: "mp3")
+        sfxPlayer = try! AVAudioPlayer(contentsOf: URL(filePath: sound!))
+        sfxPlayer.volume = 0.15
+        sfxPlayer.play()
+    }
+
+    private func playCorrectSound() {
+        let sound = Bundle.main.path(forResource: "magic-wand", ofType: "mp3")
+        sfxPlayer = try! AVAudioPlayer(contentsOf: URL(filePath: sound!))
+        sfxPlayer.volume = 0.15
+        sfxPlayer.play()
+    }
+
+    private func giveWrongFeedback() {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.error)
+    }
+
+    func playMusic() {
+        let songs = ["let-the-mystery-unfold", "spellcraft", "hiding-place-in-the-forest", "deep-in-the-dell", "magic-in-the-air"]
+        let i = Int.random(in: 0..<songs.count)
+        let sound = Bundle.main.path(forResource: songs[i], ofType: "mp3")
+        musicPlayer = try! AVAudioPlayer(contentsOf: URL(filePath: sound!))
+        musicPlayer.volume = 0.08
+        musicPlayer.numberOfLoops = -1
+        musicPlayer.play()
     }
 }
 
