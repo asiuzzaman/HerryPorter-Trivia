@@ -17,6 +17,8 @@ struct GamePlay: View {
     @State private var movePointsToScore = false
     @State private var revealHint = false
     @State private var revealBook = false
+   // @State private var tappedWrongAnswer = false
+    @State private var wrongAnswerTapped: [Int] = []
 
     let tempAnswers = [false, false, false, true]
 
@@ -51,6 +53,7 @@ struct GamePlay: View {
                                 .font(.custom(Constants.hpFont, size: 50))
                                 .multilineTextAlignment(.center)
                                 .padding()
+                                .opacity(tappedCorrectAnswer ? 0.1 : 1)
                         }
                     }
                     .animation(.easeInOut(duration: 2), value: animationViewsIn)
@@ -85,14 +88,16 @@ struct GamePlay: View {
                                     .scaleEffect(revealHint ? 5: 1)
                                     .opacity(revealHint ? 0: 1)
                                     .offset(x: revealHint ? geo.size.width/2: 0)
-                                    .overlay {
+                                    .overlay (
                                         Text("The boy who")
                                             .padding()
                                             .minimumScaleFactor(0.5)
                                             .multilineTextAlignment(.center)
                                             .opacity(revealHint ? 1: 0)
                                             .scaleEffect(revealHint ? 1.33: 1)
-                                    }
+                                    )
+                                    .opacity(tappedCorrectAnswer ? 0 : 1)
+                                    .disabled(tappedCorrectAnswer)
                             }
                         }
                         .animation(.easeInOut(duration: 1.5).delay(2), value: animationViewsIn)
@@ -127,14 +132,16 @@ struct GamePlay: View {
                                     .scaleEffect(revealBook ? 5: 1)
                                     .opacity(revealBook ? 0: 1)
                                     .offset(x: revealBook ? -geo.size.width/2: 0)
-                                    .overlay {
+                                    .overlay (
                                         Image("hp1")
                                             .resizable()
                                             .scaledToFit()
                                             .padding()
                                             .opacity(revealBook ? 1: 0)
                                             .scaleEffect(revealBook ? 1.33: 1)
-                                    }
+                                    )
+                                    .opacity(tappedCorrectAnswer ? 0 : 1)
+                                    .disabled(tappedCorrectAnswer)
 
                             }
                         }
@@ -177,9 +184,19 @@ struct GamePlay: View {
                                             .minimumScaleFactor(0.5)
                                             .padding(10)
                                             .frame(width: geo.size.width/2.15, height: 80)
-                                            .background(.green.opacity(0.5))
+                                            .background( wrongAnswerTapped.contains(i) ? .red.opacity(0.5): .green.opacity(0.5))
                                             .cornerRadius(25)
                                             .transition(.scale)
+                                            .onTapGesture {
+                                                withAnimation(.easeOut(duration: 1)) {
+
+                                                    wrongAnswerTapped.append(i);
+                                                }
+                                            }
+                                            .scaleEffect(wrongAnswerTapped.contains(i) ? 0.8: 1)
+                                            .disabled(wrongAnswerTapped.contains(i) || tappedCorrectAnswer )
+                                            .opacity(tappedCorrectAnswer ? 0 : 1)
+                                            .disabled(tappedCorrectAnswer)
                                     }
                                 }
                                 .animation(.easeOut(duration: 1).delay(1.5), value: animationViewsIn)
@@ -242,6 +259,16 @@ struct GamePlay: View {
                         if tappedCorrectAnswer {
                             Button("Next Question") {
                                 // TODO: Reset level for next question
+                                animationViewsIn = false
+                                tappedCorrectAnswer = false
+                                revealBook = false
+                                revealHint = false
+                                movePointsToScore = false
+                                wrongAnswerTapped = []
+
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    animationViewsIn = true
+                                }
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(.blue.opacity(0.5))
@@ -270,7 +297,7 @@ struct GamePlay: View {
         .ignoresSafeArea()
         .onAppear() {
             animationViewsIn = true
-            //tappedCorrectAnswer = true
+            tappedCorrectAnswer = true
         }
     }
 }
