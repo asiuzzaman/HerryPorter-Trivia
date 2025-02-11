@@ -15,6 +15,9 @@ struct HerryPorter_TriviaApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(store)
+                .task {
+                    await store.loadProducts()
+                }
         }
     }
 }

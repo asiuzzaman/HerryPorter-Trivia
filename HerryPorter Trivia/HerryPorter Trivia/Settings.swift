@@ -26,7 +26,7 @@ struct Settings: View {
                     LazyVGrid(columns: [GridItem(), GridItem()]) {
                         ForEach(0..<7) { index in
 
-                            if store.bookStatus[index] == .active {
+                            if store.bookStatus[index] == .active || (store.bookStatus[index] == .locked && store.purchasedIDs.contains("hp\(index+1)")) {
                                 ZStack(alignment: .bottomTrailing) {
                                     Image("hp\(index+1)")
                                         .resizable()
@@ -38,6 +38,9 @@ struct Settings: View {
                                         .foregroundColor(.green)
                                         .shadow(radius: 1)
                                         .padding(3)
+                                }
+                                .task {
+                                    store.bookStatus[index] = .active
                                 }
                                 .onTapGesture {
                                     store.bookStatus[index] = .inactive
@@ -73,6 +76,12 @@ struct Settings: View {
                                         .imageScale(.large)
                                         .shadow(color: .white.opacity(0.75), radius: 3)
                                         .padding(3)
+                                }
+                                .onTapGesture {
+                                    let product = store.products[index - 3]
+                                    Task {
+                                        await store.purchase(product: product)
+                                    }
                                 }
                             }
                         }

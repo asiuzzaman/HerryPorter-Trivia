@@ -18,7 +18,7 @@ enum BookStatus {
 
 @MainActor
 class Store: ObservableObject {
-    @Published var bookStatus: [BookStatus] = [.active, .active, .inactive, .locked, .locked, .locked, .active]
+    @Published var bookStatus: [BookStatus] = [.active, .active, .inactive, .locked, .locked, .locked, .locked]
     @Published var products: [Product] = []
     private var productId = ["hp4", "hp5","hp6","hp7"]
     @Published var purchasedIDs = Set<String>()
