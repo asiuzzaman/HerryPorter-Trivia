@@ -7,16 +7,13 @@
 
 import SwiftUI
 
-enum BookStatus {
-    case active
-    case inactive
-    case locked
-}
+
 
 struct Settings: View {
     @Environment(\.dismiss) private var dismiss
 
-    @State private var bookStatus: [BookStatus] = [.active, .active, .inactive, .locked, .locked, .locked, .active]
+    @EnvironmentObject private var store: Store
+
     var body: some View {
         ZStack {
             InfoBackgroundImage()
@@ -29,7 +26,7 @@ struct Settings: View {
                     LazyVGrid(columns: [GridItem(), GridItem()]) {
                         ForEach(0..<7) { index in
 
-                            if bookStatus[index] == .active {
+                            if store.bookStatus[index] == .active {
                                 ZStack(alignment: .bottomTrailing) {
                                     Image("hp\(index+1)")
                                         .resizable()
@@ -43,10 +40,10 @@ struct Settings: View {
                                         .padding(3)
                                 }
                                 .onTapGesture {
-                                    bookStatus[index] = .inactive
+                                    store.bookStatus[index] = .inactive
                                 }
                             }
-                            else if bookStatus[index] == .inactive {
+                            else if store.bookStatus[index] == .inactive {
                                 ZStack(alignment: .bottomTrailing) {
                                     Image("hp\(index+1)")
                                         .resizable()
@@ -61,7 +58,7 @@ struct Settings: View {
                                         .padding(3)
                                 }
                                 .onTapGesture {
-                                    bookStatus[index] = .active
+                                    store.bookStatus[index] = .active
                                 }
 
                             } else {
@@ -93,4 +90,5 @@ struct Settings: View {
 
 #Preview {
     Settings()
+        .environmentObject(Store())
 }
