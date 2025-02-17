@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Questions: Codable {
+struct Question: Codable {
     let id: Int
     let question: String
     var answer: [String: Bool] = [:]
